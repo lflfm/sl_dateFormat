@@ -1,0 +1,14 @@
+{
+  "name": "sl_dateformat",
+  "version": "1.2.3",
+  "description": "Date format utility by Steven Levithan",
+  "main": "date.format.js",
+  "author": { "name" : "Steven Levithan"
+            , "url" : "https://stevenlevithan.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:lflfm/sl_dateFormat.git"
+  },
+  "license": "MIT"
+}
