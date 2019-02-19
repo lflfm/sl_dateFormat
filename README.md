@@ -1,7 +1,7 @@
 ## JavaScript Date Format
 [originaly created by Steven Levithan](http://blog.stevenlevithan.com/archives/date-time-format)
 
-_note from lflfm:_ I created this repository since there is no official one and I intend to make a couple of small improvements that might help others so I will add them as future commits to this repo...
+_note from lflfm:_ I created this repository since there is no official one and I wanted it to be multi-language out of the box (I have a need to show more than one language at a time). So my only change is making the strings multi-language (which you can see on the commit history, as I first posted the exact, original code)
 
 ---
 
@@ -55,6 +55,26 @@ now.format("longTime", true);
 // ...Or add the prefix "UTC:" to your mask.
 now.format("UTC:h:MM:ss TT Z");
 // 10:46:21 PM UTC
+
+//------------------------------------------------------------------------------
+//addition by lflfm:
+// language code can be passed as 3rd parameter to date prototype
+now.format(undefined,undefined,'de');
+// 'Die Feb 19 2019 23:42:50'
+now.format('dddd, dd mmmm (mmm) yyyy',undefined,'de');
+// 'Dienstag, 19 Februar (Feb) 2019'
+
+// or we can set it on the dateFormat object (which is now exported for node.js usage)
+const {dateFormat} = require('sl_dateFormat');
+
+dateFormat(new Date);
+//'Tue Feb 19 2019 23:45:33'
+dateFormat(new Date,undefined,undefined,'pt');
+//'Ter Fev 19 2019 23:45:53'
+
+dateFormat.setLang('de');
+dateFormat(new Date);
+//'Die Feb 19 2019 23:46:58'
 ```
 Masks:
 

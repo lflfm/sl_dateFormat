@@ -24,7 +24,7 @@ var dateFormat = function () {
 		};
 
 	// Regexes and supporting functions are cached through closure
-	return function (date, mask, utc) {
+	return function (date, mask, utc, language) {
 		var dF = dateFormat;
 
 		// You can't provide utc if you skip other args (use the "UTC:" mask prefix)
@@ -58,12 +58,12 @@ var dateFormat = function () {
 			flags = {
 				d:    d,
 				dd:   pad(d),
-				ddd:  dF.i18n.dayNames[D],
-				dddd: dF.i18n.dayNames[D + 7],
+				ddd:  dF.i18n[language || dF.currentLanguage].dayNames[D],
+				dddd: dF.i18n[language || dF.currentLanguage].dayNames[D + 7],
 				m:    m + 1,
 				mm:   pad(m + 1),
-				mmm:  dF.i18n.monthNames[m],
-				mmmm: dF.i18n.monthNames[m + 12],
+				mmm:  dF.i18n[language || dF.currentLanguage].monthNames[m],
+				mmmm: dF.i18n[language || dF.currentLanguage].monthNames[m + 12],
 				yy:   String(y).slice(2),
 				yyyy: y,
 				h:    H % 12 || 12,
@@ -107,20 +107,58 @@ dateFormat.masks = {
 	isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
 };
 
+
 // Internationalization strings
+// we're using 2-digit iso 639-1 language codes: https://www.loc.gov/standards/iso639-2/php/code_list.php
 dateFormat.i18n = {
-	dayNames: [
-		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
-		"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
-	],
-	monthNames: [
-		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-		"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
-	]
+	en: {
+		dayNames: [
+			"Sun"   , "Mon"   , "Tue"    , "Wed"      , "Thu"     , "Fri"   , "Sat",
+			"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+		],
+		monthNames: [
+			"Jan"    , "Feb"     , "Mar"  , "Apr"  , "May", "Jun" , "Jul" , "Aug"   , "Sep"      , "Oct"    , "Nov"     , "Dec",
+			"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+		]
+	},
+	pt: {
+		dayNames: [
+			"Dom"    , "Seg"          , "Ter"        , "Qua"         , "Qui"         , "Sex"        , "Sab",
+			"Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"
+		],
+		monthNames: [
+			"Jan"    , "Fev"      , "Mar"  , "Abr"  , "Mai" , "Jun"  , "Jul"  , "Ago"   , "Set"     , "Out"    , "Nov"     , "Dez",
+			"Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+		]
+	},
+	de: {
+		dayNames: [
+			"Son"    , "Mon"   , "Die"     , "Mit"     , "Don"       , "Fre"    , "Sam",
+			"Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"
+		],
+		monthNames: [
+			"Jan"   , "Feb"    , "Mär" , "Apr"  , "Mai", "Jun" , "Jul" , "Aug"   , "Sep"      , "Okt"    , "Nov"     , "Dez",
+			"Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"
+		]
+	}
 };
 
-// For convenience...
-Date.prototype.format = function (mask, utc) {
-	return dateFormat(this, mask, utc);
+//For convenience...
+//in the prototype, the non-english languages must be passed at every call
+Date.prototype.format = function (mask, utc, lang) {
+	return dateFormat(this, mask, utc, lang);
 };
 
+//in the dateFormat object we can set the language and then call without specifying (we can specify at call time to...)
+dateFormat.currentLanguage = 'en'; //default current language to english for compatibility
+dateFormat.setLang = function(pi_lang) {
+	if (dateFormat.i18n.hasOwnProperty(pi_lang)) {
+		dateFormat.currentLanguage = pi_lang;
+	} else {
+		throw new ReferenceError('Unknown language code for dateFormat ['+pi_lang+']');
+	}
+};
+
+if (module && typeof module == 'object') {
+	module.exports = {dateFormat};
+}

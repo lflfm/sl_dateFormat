@@ -6,6 +6,8 @@
   "author": { "name" : "Steven Levithan"
             , "url" : "https://stevenlevithan.com"
   },
+  "contributors": [{ "name" : "lfllfm"}
+  ],
   "repository": {
     "type": "git",
     "url": "ssh://git@github.com:lflfm/sl_dateFormat.git"
